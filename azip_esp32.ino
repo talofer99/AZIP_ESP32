@@ -39,7 +39,7 @@ void setup()
   Serial.begin(115200);
   Serial.println("System Started");
 
-  // display
+  // display (R, G, B, H and V)
   displayController.begin(GPIO_NUM_21, GPIO_NUM_22, GPIO_NUM_4, GPIO_NUM_17, GPIO_NUM_15);
   displayController.setResolution(VGA_640x480_60Hz);
 
