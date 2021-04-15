@@ -1,0 +1,39 @@
+ESP32 Arduino Z-code Interpreter Program - with VGA and PS2 Keyboard
+
+This version of the Z-code interpreter is derived from Jzip created by John Holder.
+More information about Jzip, including the source code can by found here:
+http://jzip.sourceforge.net/
+
+The original Code for the AZIP is a copy of this git project 
+https://github.com/talofer99/AZIP
+ 
+
+Software Dependencies:
+SDFAT library: https://github.com/greiman/SdFat
+fabGL library: https://github.com/fdivitto/FabGL
+
+Hardware Dependencies:
+Formatted SD card - fat16 use SD card Formater 
+
+The fabgl library has schamtics for the VGA and the PS2 connections. 
+I used the original pinout for the ps2, but moved 2 of the VGA pins that were using SPI pins that 
+were needed for the SD card. 
+
+
+Getting Started Steps:
+1. Copy a Z-Machine game file to the SD card and name it "ZORKI.DAT".
+2. Compile and upload the sketch to the Arduino.
+
+
+I have include a copy Mini-Zork I downloaded from here:
+http://www.ifarchive.org/indexes/if-archiveXinfocomXdemos.html
+
+Game files can be found several places on the internet, a good source for games is The Interactive Fiction Archive:
+http://www.ifarchive.org/indexes/if-archiveXgamesXzcode.html
+
+Zork I, II, and III can be downloaded here:
+http://www.infocom-if.org/downloads/downloads.html
+
+Limitations:
+Due to the limits of RAM and FLASH, removed most of the screen handling capability. 
+Game save and restore capability are removed. 
