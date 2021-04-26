@@ -112,7 +112,7 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   interpret( );
-  // if we got to here the system was hlated by Quit - we restart to allow choseing of new game. 
+  // if we got to here the system was halted by Quit - we restart to allow choosing of new game. 
   ESP.restart();
 }
 
