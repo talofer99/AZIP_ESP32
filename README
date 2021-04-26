@@ -8,6 +8,17 @@ The original Code for the AZIP is a copy of this git project
 https://github.com/talofer99/AZIP
  
 
+*** UPDATE 26/4/2021: 
+
+Thanks to @guidol70 the SD was moved the pinout of the TTGO VGA32 and the SD init was chnaged. 
+#define SS 13.
+#define SDMHZ 25
+#define SPIINIT 14,2,12,SS // TTGO_VGA32 (sck, miso, mosi, cs)
+#define SDINIT SS, SD_SCK_MHZ(SDMHZ)
+QUIT command the board will restart to allow choosing new game. 
+TODO: work out the save/load and then we can choose new game without restart. 
+
+
 Software Dependencies:
 SDFAT library: https://github.com/greiman/SdFat
 fabGL library: https://github.com/fdivitto/FabGL
