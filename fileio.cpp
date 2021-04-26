@@ -40,7 +40,6 @@
   */
   
 #include <SdFat.h>
-#include <SD.h>
 #include "ztypes.h"
 
 /* Static data */

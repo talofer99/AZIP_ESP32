@@ -17,12 +17,19 @@ fabgl::PS2Controller PS2Controller;
 
 // SD
 #include <SdFat.h>
+#include <SPI.h>
+
 
 // system
 #include "ztypes.h"
 
-// SD config
-#define SD_CONFIG SdSpiConfig(SS, SHARED_SPI, SD_SCK_MHZ(16))
+// =========================================================================================
+// TTGO Hardware Definition
+// =========================================================================================
+#define SS 13.
+#define SDMHZ 25
+#define SPIINIT 14,2,12,SS // TTGO_VGA32 (sck, miso, mosi, cs)
+#define SDINIT SS, SD_SCK_MHZ(SDMHZ)
 
 // file system
 SdFat sd;
@@ -41,8 +48,10 @@ void setup()
 
   // display (R, G, B, H and V)
   displayController.begin(GPIO_NUM_21, GPIO_NUM_22, GPIO_NUM_4, GPIO_NUM_17, GPIO_NUM_15);
+  // un comment this and comment the above to use the TTGO VGA32 settings.
+  //displayController.begin();
   displayController.setResolution(VGA_640x480_60Hz);
-
+  
   // ps2 control
   PS2Controller.begin(PS2Preset::KeyboardPort0);
   auto keyboard = PS2Controller.keyboard();
@@ -57,33 +66,35 @@ void setup()
   Terminal.write("\e[40;32m"); // background: black, foreground: green
   slowPrintf("Running System Tests\r\n");
 
-  //KB test
-  slowPrintf("Test Keyboard....");
+  // KEYBOARD
+  slowPrintf("Test Keyboard  : ");
   if (keyboard->isKeyboardAvailable())
-    slowPrintf("OK!\r\n");
+    slowPrintf("[OK]\r\n");
   else
     slowPrintf("FAIL!\r\n");
-  delay(500);
 
-  // sd
-  slowPrintf("Test SD....");
-  if (!sd.begin(SD_CONFIG))
-  {
-    slowPrintf("FAIL!\r\n");
-    sd.initErrorHalt();
-  }
+  // SPI
+  slowPrintf("Test SPI-Init  : ");
+  SPI.begin(SPIINIT);
+  slowPrintf("[OK]\r\n");
+
+  // SD 
+  slowPrintf("Test SD-Card   : ");
+  if (sd.begin(SDINIT))
+    slowPrintf("[OK]\r\n\r\n");
   else
-    slowPrintf("OK!\r\n\r\n");
+    slowPrintf("FAIL!\r\n");
+
 
   Terminal.write("\e[40;97m"); // background: black, foreground: white
 
   //show list of games
   byte gameIndex = getGameSelection();
-  getSelectedGameFileName(gameIndex,gameFileName);
+  getSelectedGameFileName(gameIndex, gameFileName);
 
   // open story
   slowPrintf("Loading Game....");
-  open_story(gameFileName); 
+  open_story(gameFileName);
 
   // put your setup code here, to run once:
   configure( V1, V8 );
@@ -101,12 +112,14 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   interpret( );
+  // if we got to here the system was hlated by Quit - we restart to allow choseing of new game. 
+  ESP.restart();
 }
 
 
 
 /* *************************************
- * Slow Print 
+   Slow Print
  * *************************************/
 void slowPrintf(const char * format, ...)
 {
@@ -128,7 +141,7 @@ void slowPrintf(const char * format, ...)
 
 
 /* *************************************
- * process output from sd to vga 
+   process output from sd to vga
  * *************************************/
 void processreadfromsd(int c) {
   Serial.write((int) c);
@@ -154,7 +167,7 @@ void processreadfromsd(int c) {
 
 
 /* *********************************************************
- *  Process kb
+    Process kb
  * *********************************************************/
 
 // Process prompt line
@@ -279,10 +292,10 @@ boolean getFileName(SdFile *file, char * fileName, byte *fileNameLen)
 
 
 /******************************************************
-/   Get name of selected game by Index
+  /   Get name of selected game by Index
 * *****************************************************/
 
-void getSelectedGameFileName(byte gameIndex,char * fileName)
+void getSelectedGameFileName(byte gameIndex, char * fileName)
 {
   char fileNameInList[15];
   byte fileNameInListLen;
@@ -310,7 +323,7 @@ void getSelectedGameFileName(byte gameIndex,char * fileName)
 
   // close directory
   dir.close();
-  // copy to passed variable  
+  // copy to passed variable
   strncpy(fileName, fileNameInList, fileNameInListLen);
 }
 
